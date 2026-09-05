@@ -131,9 +131,6 @@ public:
     bool startsWith(string prefix) {
         TrieNode* current = root;
 		for (char ch : prefix) {
-			if (ch < 'a' || ch > 'z') {
-				return false; 
-			}
 			int index = ch - 'a';
 			if (current->children[index] == nullptr) {
 				return false;
