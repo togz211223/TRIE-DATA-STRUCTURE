@@ -128,7 +128,19 @@ public:
     vector<string> autocomplete(string prefix) {
         vector<string> suggestions;
         
-        // TODO: Implement this function
+        TrieNode* current = root;
+
+for (char ch : prefix) {
+    int index = ch - 'a';
+
+    if (current->children[index] == nullptr) {
+        return suggestions;
+    }
+
+    current = current->children[index];
+}
+
+findAllWords(current, prefix, suggestions);
         
         return suggestions;
     }
@@ -188,8 +200,21 @@ public:
     // Input: "appreciate"
     // Output: "app"
     string longestPrefixOf(string word) {
-        // TODO: Implement this function
-        return "";
+        TrieNode* current = root;
+string prefix = "";
+
+for (char ch : word) {
+    int index = ch - 'a';
+
+    if (current->children[index] == nullptr) {
+        break;
+    }
+
+    current = current->children[index];
+    prefix += ch;
+}
+
+return prefix;
     }
     
     // Check whether the Trie contains any words
@@ -225,7 +250,23 @@ public:
     vector<string> autocomplete(string prefix, int limit) {
         vector<string> suggestions;
         
-        // TODO: Implement this function
+        TrieNode* current = root;
+
+for (char ch : prefix) {
+    int index = ch - 'a';
+
+    if (current->children[index] == nullptr) {
+        return suggestions;
+    }
+
+    current = current->children[index];
+}
+
+findAllWords(current, prefix, suggestions);
+
+if (suggestions.size() > limit) {
+    suggestions.resize(limit);
+}
         
         return suggestions;
     }
