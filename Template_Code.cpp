@@ -55,7 +55,6 @@ private:
     // Input: current node
     // Output: none
     // Purpose: Free all dynamically allocated Trie nodes
-    void deleteNodes(TrieNode* node) {
        
         void deleteNodes(TrieNode* node) {
     if (node == nullptr) {
