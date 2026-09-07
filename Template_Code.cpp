@@ -55,8 +55,18 @@ private:
     // Input: current node
     // Output: none
     // Purpose: Free all dynamically allocated Trie nodes
-    void deleteNodes(TrieNode* node) {
-        // TODO: Implement this function
+       
+        void deleteNodes(TrieNode* node) {
+    if (node == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < 26; i++) {
+        deleteNodes(node->children[i]);
+    }
+
+    delete node;
+}
     }
 
     // Helper function to count words from a specific node
@@ -87,15 +97,60 @@ private:
     //
     // Purpose:
     // Remove the word while deleting unnecessary nodes
-    bool removeHelper(
-        TrieNode* node,
-        string word,
-        int index
-    ) {
-        // TODO: Implement this function
+    bool removeHelper(TrieNode* node, const string& word, int depth) {
+
+    // We reached the end of the word
+    if (depth == word.length()) {
+
+        // Word does not exist
+        if (!node->isEndOfWord) {
+            return false;
+        }
+
+        // Unmark the end of the word
+        node->isEndOfWord = false;
+
+        // Check if this node has children
+        for (int i = 0; i < 26; i++) {
+            if (node->children[i] != nullptr) {
+                return false;
+            }
+        }
+
+        // Node has no children, so it can be deleted
+        return true;
+    }
+
+    int index = word[depth] - 'a';
+
+    // The word does not exist
+    if (node->children[index] == nullptr) {
         return false;
     }
 
+    TrieNode* child = node->children[index];
+
+    bool shouldDeleteChild = removeHelper(child, word, depth + 1);
+
+    // Delete child if it is no longer needed
+    if (shouldDeleteChild) {
+        delete child;
+        node->children[index] = nullptr;
+    }
+
+    // Check if current node can be deleted
+    if (!node->isEndOfWord) {
+        for (int i = 0; i < 26; i++) {
+            if (node->children[i] != nullptr) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
 public:
     // Constructor
     // Input: none
@@ -115,8 +170,25 @@ public:
     // Input: word to insert
     // Output: none
     // Purpose: Add a word to the Trie by creating nodes for each character
-    void insert(string word) {
-        // TODO: Implement this function
+    void insert(const string& word) {
+    TrieNode* current = root;
+
+    for (char ch : word) {
+        int index = ch - 'a';
+
+        if (current->children[index] == nullptr) {
+            current->children[index] = new TrieNode();
+        }
+
+        current = current->children[index];
+    }
+
+    // Only count the word if it is newly inserted
+    if (!current->isEndOfWord) {
+        current->isEndOfWord = true;
+        wordCount++;
+    }
+}
     }
 
     // Search for a word in the Trie
@@ -264,10 +336,9 @@ return prefix;
     // Input: none
     // Output: true if empty, false otherwise
     // Purpose: Check if the Trie has no stored words
-    bool isEmpty() {
-        // TODO: Implement this function
-        return true; // placeholder
-    }
+   bool isEmpty() {
+    return wordCount == 0;
+}
 
     // Remove all words from the Trie
     // Input: none
