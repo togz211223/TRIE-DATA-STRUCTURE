@@ -57,6 +57,15 @@ private:
     // Purpose: Free all dynamically allocated Trie nodes
     void deleteNodes(TrieNode* node) {
         // TODO: Implement this function
+     if (node == nullptr) {
+        return;}
+
+    for (int i = 0; i < 26; i++) {
+        if (node->children[i] != nullptr) {
+            deleteNodes(node->children[i]);
+        }
+    }
+    delete node;
     }
 
     // Helper function to count words from a specific node
@@ -95,12 +104,16 @@ public:
     // Purpose: Initialize the Trie with a root node
     Trie() {
         // TODO: Implement this function
+        root = new TrieNode();
+        wordCount = 0;
     }
 
     // Destructor
     // Purpose: Free all dynamically allocated memory
     ~Trie() {
         // TODO: Implement this function
+        deleteNodes(root);
+
     }
 
     // Insert a word into the Trie
@@ -253,7 +266,7 @@ return prefix;
     // Purpose: Check if the Trie has no stored words
     bool isEmpty() {
         // TODO: Implement this function
-        return true; // placeholder
+        return wordCount == 0;
     }
 
     // Remove all words from the Trie
@@ -262,6 +275,9 @@ return prefix;
     // Purpose: Completely clear the Trie
     void clear() {
         // TODO: Implement this function
+        deleteNodes(root);
+        root = new TrieNode();
+        wordCount = 0;
     }
 
     // Get autocomplete suggestions with a maximum limit
