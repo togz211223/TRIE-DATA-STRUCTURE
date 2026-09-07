@@ -64,8 +64,16 @@ private:
     // Output: number of complete words below this node
     // Purpose: Count all words starting from this node
     int countWordsFromNode(TrieNode* node) {
-        // TODO: Implement this function
-        return 0;
+        if (node == nullptr) return 0;
+
+        int sum = 0;
+        if (node->isEndOfWord) sum += 1;
+
+        for (TrieNode* ch: node->children) {
+            sum += countWordsFromNode(ch);
+        }
+
+        return sum;
     }
 
     // Helper function to remove a word recursively
@@ -192,8 +200,7 @@ findAllWords(current, prefix, suggestions);
     // Output: number of words
     // Purpose: Return how many unique complete words exist in the Trie
     int countWords() {
-        // TODO: Implement this function
-        return 0;
+        return wordCount;
     }
 
     // Count how many words start with a given prefix
@@ -201,8 +208,14 @@ findAllWords(current, prefix, suggestions);
     // Output: number of words
     // Purpose: Count all complete words that begin with the prefix
     int countWordsWithPrefix(string prefix) {
-        // TODO: Implement this function
-        return 0;
+        TrieNode* current = root;
+
+        for (char ch: prefix) {
+            if (current == nullptr) return 0;
+            current = current->children[ch - 'a'];
+        }
+
+        return countWordsFromNode(current);
     }
 
     // Get all words stored in the Trie
